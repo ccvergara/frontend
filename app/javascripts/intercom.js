@@ -5,7 +5,13 @@ if (Badger.getAccessToken()) {
         user_id: response.data.id,
         email: response.data.email,
         user_hash: response.data.intercom_hash,
-        widget: {activator: '#IntercomDefaultWidget'}
+        widget: {activator: '#IntercomDefaultWidget'},
+        "first_name": response.data.first_name,
+        "last_name": response.data.last_name,
+        "domain_credits": response.data.domain_credits,
+        "domain_count": response.data.domain_count,
+        "confirmed_email": response.data.confirmed_email,
+        "suspected_fraud": response.data.suspected_fraud
       }
     );
   });
