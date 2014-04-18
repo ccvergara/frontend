@@ -16,11 +16,11 @@ with (Hasher('Application')) {
   //     update_sidebar_with_correct_actives(request_uri);
   //     OutlineFix.fix_ie_7();
   //   }
-  // 
+  //
   //   // Fix placeholder does not work in IE
   //   Placeholder.fix_ie();
   // })
-  // 
+  //
   // after_filter('update_sidebar', update_sidebar);
 
 
@@ -30,7 +30,7 @@ with (Hasher('Application')) {
   //   if (request_uri.indexOf("#blogs/") == 0) request_uri = '#blogs';
   //   if (request_uri.indexOf("#tickets/") == 0) request_uri = '#tickets';
   //   if (request_uri.indexOf("#knowledge_center/") != -1) request_uri = '#knowledge_center';
-  // 
+  //
   //   // select active link and expand parent
   //   $('#sidebar ul').removeClass('expanded');
   //   $('#sidebar a').removeClass('active');
@@ -50,7 +50,7 @@ with (Hasher('Application')) {
   define('update_my_domains_count', function(refresh) {
     if (!Badger.getAccessToken()) return;
     if (refresh) BadgerCache.flush('domains');
-    
+
     BadgerCache.getDomains(function(response) {
       var count = (response.data||[]).length;
       if (count > 0) {
@@ -62,7 +62,7 @@ with (Hasher('Application')) {
       }
     });
   });
-  
+
   after_filter('update_my_domains_count', update_my_domains_count);
 
   define('check_if_domain_should_be_added_to_sidebar', function(request_uri) {
@@ -79,53 +79,41 @@ with (Hasher('Application')) {
   });
 
   layout('default_layout', function(yield) {
-    // var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
+    /* var ie_browser = (/MSIE (\d+\.\d+);/.test(navigator.userAgent)); */
     return [
       header(),
 
       div({ id: 'wrapper' },
         div({ id: 'main' },
           div({ id: 'before-content' }),
-          div({ 'class': 'content' }, 
+          div({ 'class': 'content' },
             yield
           ),
           div({ id: 'after-content' })
         )
       ),
-      
-      footer(),
-      
-      chatbar()
+
+      footer()
     ];
-  });
-
-
-  define('chatbar', function() {
-    return div({ 'class': 'closed', id: 'chatbar' },
-      a({ href: Chat.hide_chat, 'class': 'close-button' }, 'X'),
-      a({ href: Chat.minimize_chat, 'class': 'close-button min-button' }, '–'),
-      h2({ onclick: Chat.show_chat }, 'Badger Chatroom'),
-      div({ "class": "content" })
-    );
   });
 
   define('header', function() {
     return div({ id: 'header', 'class': (Badger.getAccessToken() && 'loggedin') },
       div({ 'class': 'inner' },
+        /*h2({ id: 'logo' }, img({ src: 'images/badger-4.png', style: 'height: 40px'}) ),*/
         h2({ id: 'logo' }, a({ href: '#welcome'}, 'Badger')),
-        //h2({ id: 'logo' }, img({ src: 'images/badger-4.png', style: 'height: 40px'}), span({ style: "color: #fff; font-size: 13px" }, '3 Domains')),
 
         //a({ href: '#search', 'class': 'myButton', style: 'margin: 8px 0 0 20px; padding: 4px 14px; font-size: 16px' }, 'Search for a new domain'),
         Search.search_box(),
-        
+
         Badger.getAccessToken() ? left_topnav() : unauthed_left_topnav(),
         right_topnav(),
-      
+
         Badger.getAccessToken() ? user_nav() : unauthed_user_nav()
       )
     );
   });
-  
+
   define('footer', function() {
     return div({ id: 'footer' },
       div({ 'class': 'outer' },
@@ -163,9 +151,7 @@ with (Hasher('Application')) {
               li(
                 a({ href: "https://twitter.com/badger", target: "_blank" }, 'Twitter'),
                 ' / ',
-                a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook'),
-                ' / ',
-                a({ href: "irc://irc.freenode.net/badger" }, 'IRC')
+                a({ href: "https://www.facebook.com/BadgerDotCom", target: "_blank" }, 'Facebook')
               ),
               li(a({ href: "https://www.google.com/search?tbm=isch&q=" + (Math.random() > 0.5 ? "baby+badgers" : "badger+cubs"), target: "_blank" }, 'More Badgers'))
             )
@@ -190,16 +176,13 @@ with (Hasher('Application')) {
   define('left_topnav', function() {
     return div({ 'id': 'left-topnav'},
       a({ 'class': 'navlink', href: '#domains', id: 'user-nav-domains' }, 'Domains'),
-      a({ 'class': 'navlink', href: '#rewards', id: 'user-nav-domains' }, 'Rewards'),
-      a({ 'class': 'navlink last', href: Chat.show_chat }, 'Chatroom')
-      //a({ 'class': 'navlink last', href: '#rewards'}, '20 Reward Points')
+      a({ 'class': 'navlink last', href: '#rewards', id: 'user-nav-domains' }, 'Rewards')
     );
   });
-  
+
   define('unauthed_left_topnav', function() {
     return div({ 'id': 'left-topnav'},
-      a({ 'class': 'navlink', href: 'https://demo.badger.com/', target: '_blank' }, 'Try Demo'),
-      a({ 'class': 'navlink last', href: Chat.show_chat }, 'Chatroom')
+      a({ 'class': 'navlink last', href: 'https://demo.badger.com/', target: '_blank' }, 'Try Demo')
     );
   });
 
@@ -207,10 +190,9 @@ with (Hasher('Application')) {
     return div({ 'id': 'right-topnav' },
       a({ 'class': 'navlink', href: '#account/billing', id: 'user_nav_credits', style: 'display: none' }, 'Credits'),
       a({ id: 'shopping-cart-nav-button', 'class': 'navlink last', href: '#cart'}, 'Shopping Cart', span({ id: 'shopping-cart-size', 'class': 'another-alert', style: 'display: ' + (BadgerCart.get_domains().length > 0 ? '' : 'none') }, BadgerCart.get_domains().length))
-      //a({ 'class': 'navlink last', href: '#domains'}, 'Balance', span({ 'class': 'another-alert' }, '$5.00'))
     );
   });
-  
+
   define('unauthed_user_nav', function() {
     return div({ id: 'user-nav', 'class': 'unauthed' },
       a({ 'class': 'navlink', href: '#account/login' }, 'Login'),
@@ -224,7 +206,7 @@ with (Hasher('Application')) {
       $('#user-nav').removeClass('flyout');
     }, 500);
   });
-  
+
   define('user_nav_flyout_mouseover', function() {
     $('#user-nav').addClass('flyout');
     if (this.usernav_timeout) {
@@ -232,12 +214,12 @@ with (Hasher('Application')) {
       delete this.usernav_timeout;
     }
   });
-  
+
   define('user_nav', function() {
     var user_nav_div = div({ id: 'user-nav', onMouseOver: user_nav_flyout_mouseover, onMouseOut: user_nav_flyout_mouseout },
       a({ href: function() {} }, 'Loading...', span({ 'class': 'downarrow' }, '▼'))
     );
-    
+
     with_user_nav_content(function(content) {
       render({ into: user_nav_div }, content);
     });
@@ -260,7 +242,7 @@ with (Hasher('Application')) {
         )
       ]);
     });
-      
+
     // //$(user_nav).prepend(span(a({ href: '#account/settings'}, response.data.name)));
     // // $(user_nav).prepend(span(a({ href: '#invites', id: 'user_nav_invites_available' }, 'Invites')));
     // $(user_nav).prepend(span(a({ href: '#domains', id: 'user-nav-domains' }, 'Domains')));  // updated by update_credits after_filter
@@ -298,12 +280,12 @@ with (Hasher('Application')) {
   //   });
   // });
   // after_filter('update_invites_available_count', update_invites_available_count);
-  
+
 
   ////////////////
   // dom helpers
   ////////////////
-  
+
   define('country_options', function(selected_country) {
     countries = [["AF", "Afghanistan"],["AX", "Åland"],["AL", "Albania"],["DZ", "Algeria"],["AS", "American Samoa"],["AD", "Andorra"],["AO", "Angola"],["AI", "Anguilla"],["AQ", "Antarctica"],["AG", "Antigua and Barbuda"],["AR", "Argentina"],["AM", "Armenia"],["AW", "Aruba"],["AU", "Australia"],["AT", "Austria"],["AZ", "Azerbaijan"],["BS", "Bahamas"],["BH", "Bahrain"],["BD", "Bangladesh"],["BB", "Barbados"],["BY", "Belarus"],["BE", "Belgium"],["BZ", "Belize"],["BJ", "Benin"],["BM", "Bermuda"],["BT", "Bhutan"],["BO", "Bolivia"],["BA", "Bosnia and Herzegovina"],["BW", "Botswana"],["BV", "Bouvet Island"],["BR", "Brazil"],["IO", "British Indian Ocean Territory"],["BN", "Brunei Darussalam"],["BG", "Bulgaria"],["BF", "Burkina Faso"],["BI", "Burundi"],["KH", "Cambodia"],["CM", "Cameroon"],["CA", "Canada"],["CV", "Cape Verde"],["KY", "Cayman Islands"],["CF", "Central African Republic"],["TD", "Chad"],["CL", "Chile"],["CN", "China"],["CX", "Christmas Island"],["CC", "Cocos (Keeling) Islands"],["CO", "Colombia"],["KM", "Comoros"],["CG", "Congo (Brazzaville)"],["CD", "Congo (Kinshasa)"],["CK", "Cook Islands"],["CR", "Costa Rica"],["CI", "Côte d'Ivoire"],["HR", "Croatia"],["CU", "Cuba"],["CY", "Cyprus"],["CZ", "Czech Republic"],["DK", "Denmark"],["DJ", "Djibouti"],["DM", "Dominica"],["DO", "Dominican Republic"],["EC", "Ecuador"],["EG", "Egypt"],["SV", "El Salvador"],["GQ", "Equatorial Guinea"],["ER", "Eritrea"],["EE", "Estonia"],["ET", "Ethiopia"],["FK", "Falkland Islands"],["FO", "Faroe Islands"],["FJ", "Fiji"],["FI", "Finland"],["FR", "France"],["GF", "French Guiana"],["PF", "French Polynesia"],["TF", "French Southern Lands"],["GA", "Gabon"],["GM", "Gambia"],["GE", "Georgia"],["DE", "Germany"],["GH", "Ghana"],["GI", "Gibraltar"],["GR", "Greece"],["GL", "Greenland"],["GD", "Grenada"],["GP", "Guadeloupe"],["GU", "Guam"],["GT", "Guatemala"],["GG", "Guernsey"],["GN", "Guinea"],["GW", "Guinea-Bissau"],["GY", "Guyana"],["HT", "Haiti"],["HM", "Heard and McDonald Islands"],["HN", "Honduras"],["HK", "Hong Kong"],["HU", "Hungary"],["IS", "Iceland"],["IN", "India"],["ID", "Indonesia"],["IR", "Iran"],["IQ", "Iraq"],["IE", "Ireland"],["IM", "Isle of Man"],["IL", "Israel"],["IT", "Italy"],["JM", "Jamaica"],["JP", "Japan"],["JE", "Jersey"],["JO", "Jordan"],["KZ", "Kazakhstan"],["KE", "Kenya"],["KI", "Kiribati"],["KP", "Korea, North"],["KR", "Korea, South"],["KW", "Kuwait"],["KG", "Kyrgyzstan"],["LA", "Laos"],["LV", "Latvia"],["LB", "Lebanon"],["LS", "Lesotho"],["LR", "Liberia"],["LY", "Libya"],["LI", "Liechtenstein"],["LT", "Lithuania"],["LU", "Luxembourg"],["MO", "Macau"],["MK", "Macedonia"],["MG", "Madagascar"],["MW", "Malawi"],["MY", "Malaysia"],["MV", "Maldives"],["ML", "Mali"],["MT", "Malta"],["MH", "Marshall Islands"],["MQ", "Martinique"],["MR", "Mauritania"],["MU", "Mauritius"],["YT", "Mayotte"],["MX", "Mexico"],["FM", "Micronesia"],["MD", "Moldova"],["MC", "Monaco"],["MN", "Mongolia"],["ME", "Montenegro"],["MS", "Montserrat"],["MA", "Morocco"],["MZ", "Mozambique"],["MM", "Myanmar"],["NA", "Namibia"],["NR", "Nauru"],["NP", "Nepal"],["NL", "Netherlands"],["AN", "Netherlands Antilles"],["NC", "New Caledonia"],["NZ", "New Zealand"],["NI", "Nicaragua"],["NE", "Niger"],["NG", "Nigeria"],["NU", "Niue"],["NF", "Norfolk Island"],["MP", "Northern Mariana Islands"],["NO", "Norway"],["OM", "Oman"],["PK", "Pakistan"],["PW", "Palau"],["PS", "Palestine"],["PA", "Panama"],["PG", "Papua New Guinea"],["PY", "Paraguay"],["PE", "Peru"],["PH", "Philippines"],["PN", "Pitcairn"],["PL", "Poland"],["PT", "Portugal"],["PR", "Puerto Rico"],["QA", "Qatar"],["RE", "Reunion"],["RO", "Romania"],["RU", "Russian Federation"],["RW", "Rwanda"],["BL", "Saint Barthélemy"],["SH", "Saint Helena"],["KN", "Saint Kitts and Nevis"],["LC", "Saint Lucia"],["MF", "Saint Martin (French part)"],["PM", "Saint Pierre and Miquelon"],["VC", "Saint Vincent and the Grenadines"],["WS", "Samoa"],["SM", "San Marino"],["ST", "Sao Tome and Principe"],["SA", "Saudi Arabia"],["SN", "Senegal"],["RS", "Serbia"],["SC", "Seychelles"],["SL", "Sierra Leone"],["SG", "Singapore"],["SK", "Slovakia"],["SI", "Slovenia"],["SB", "Solomon Islands"],["SO", "Somalia"],["ZA", "South Africa"],["GS", "South Georgia and South Sandwich Islands"],["ES", "Spain"],["LK", "Sri Lanka"],["SD", "Sudan"],["SR", "Suriname"],["SJ", "Svalbard and Jan Mayen Islands"],["SZ", "Swaziland"],["SE", "Sweden"],["CH", "Switzerland"],["SY", "Syria"],["TW", "Taiwan"],["TJ", "Tajikistan"],["TZ", "Tanzania"],["TH", "Thailand"],["TL", "Timor-Leste"],["TG", "Togo"],["TK", "Tokelau"],["TO", "Tonga"],["TT", "Trinidad and Tobago"],["TN", "Tunisia"],["TR", "Turkey"],["TM", "Turkmenistan"],["TC", "Turks and Caicos Islands"],["TV", "Tuvalu"],["UG", "Uganda"],["UA", "Ukraine"],["AE", "United Arab Emirates"],["GB", "United Kingdom"],["UM", "United States Minor Outlying Islands"],["US", "United States of America"],["UY", "Uruguay"],["UZ", "Uzbekistan"],["VU", "Vanuatu"],["VA", "Vatican City"],["VE", "Venezuela"],["VN", "Vietnam"],["VG", "Virgin Islands, British"],["VI", "Virgin Islands, U.S."],["WF", "Wallis and Futuna Islands"],["EH", "Western Sahara"],["YE", "Yemen"],["ZM", "Zambia"],["ZW", "Zimbabwe"]];
     return [
@@ -320,11 +302,11 @@ with (Hasher('Application')) {
       })
     ];
   });
-  
+
   define('scroll_to_top', function() {
     $.smoothScroll(0);
   });
-  
+
   define('logged_in', function(route) {
     return !!Badger.getAccessToken();
   });
@@ -363,21 +345,21 @@ with (Hasher('Application')) {
     options['class'] = 'subtle-info-message';
     return info_message(options, arguments);
   });
-  
+
   define('spinner', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    
+
     // override the styling, but allow other attributes to be set
     options.style = 'left: 0px; top: 115px; position: relative; text-align: center;';
-        
+
     return div(options,
       img({ src: 'images/spinner.gif' }),
       br(),
       span({ style: 'font-style: italic' }, arguments)
     );
   });
-  
+
   // like spinner, but wrapped in a modal
   define('show_spinner_modal', function(message) {
     show_modal({ style: 'height: 150px; text-align: center;' },
@@ -387,7 +369,7 @@ with (Hasher('Application')) {
       )
     )
   });
-  
+
   // this will return a form, and when the submit button is clicked, it will hide the form content,
   // and display a loader div
   define('form_with_loader', function() {
@@ -396,7 +378,7 @@ with (Hasher('Application')) {
 
     // pick off whether or not this form has a sidebar. hacky.
     var has_sidebar = !!((options['class'] || '').match(/has-sidebar/));
-    
+
     // save the original form action now
     var original_form_action = options.action;
     var wrapper_div = div(
@@ -407,22 +389,22 @@ with (Hasher('Application')) {
         arguments
       )
     );
-    
+
     // override the form action
     options.action = (function(form_data) {
       show_form_submit_loader();
-      
+
       // if it's a long page, the user likely clicked a submit button at the bottom.
       // scroll the page to the top to show any errors that might show up
       scroll_to_top();
-      
+
       // execute the original form action
       original_form_action(form_data);
     });
-    
+
     return form(options, wrapper_div);
   });
-  
+
   // render a header with links
   define('chained_header_with_links', function() {
     var arguments = flatten_to_array(arguments);
@@ -442,12 +424,12 @@ with (Hasher('Application')) {
     }
     return h1(header_arguments);
   });
-      
+
   define('hide_form_submit_loader', function() {
     make_visible('#_form-loader', false);
     make_visible('#_form-internals', true);
   });
-  
+
   define('show_form_submit_loader', function() {
     make_visible('#_form-loader', true);
     make_visible('#_form-internals', false);
@@ -463,7 +445,7 @@ with (Hasher('Application')) {
       if ($(id).css('visibility') != 'hidden') $(id).css('visibility', 'hidden');
     }
   });
-  
+
   /*
   *  Easily define pretty looking icons to throw in tables, etc.
   *
@@ -474,23 +456,23 @@ with (Hasher('Application')) {
   define('app_store_icon', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
-    
+
     // override the class of the anchor
     options['class'] = 'app_store_container';
-    
+
     return a(options,
       span({ 'class': 'app_store_icon', style: 'background-image: url(' + (options.image_src || 'images/apps/badger.png') + ')' } ),
       span({ style: 'text-align: center; font-weight: bold; min-height: 36px' }, options.name || "")
     );
   });
-  
+
   // just show the ajax loader gif
   define('ajax_loader', function() {
     var arguments = flatten_to_array(arguments);
     var options = shift_options_from_args(arguments);
     return div(options, img({ src: 'images/ajax-loader.gif' }));
   });
-  
+
 
   //////////////
   // left nav
@@ -503,7 +485,7 @@ with (Hasher('Application')) {
   //     li({ 'class': "knowledge-center" }, a({ href: "#knowledge_center" }, 'KNOWLEDGE CENTER')),
   //     li({ 'class': "contact-us" }, a({ href: "#contact_us" }, 'CONTACT US'))
   //   ];
-  //   
+  //
   //   return ul({ id: 'menu' },
   //     Badger.getAccessToken() ? [
   //       li({ id: 'nav-my-domains' },
@@ -513,12 +495,12 @@ with (Hasher('Application')) {
   //           li({ 'class': "expiring-soon"}, a({ href: "#filter_domains/expiringsoon/list" }, 'EXPIRING SOON'))
   //         )
   //       ),
-  // 
+  //
   //       li({ id: 'nav-my-account' },
   //         a({ href: "#account" }, 'MY ACCOUNT'),
   //         my_account_nav()
   //       ),
-  // 
+  //
   //       li({ id: 'nav-help-and-support' },
   //         a({ href: "#welcome" }, 'BADGER.COM'),
   //         ul(badger_menu_items)
@@ -527,10 +509,10 @@ with (Hasher('Application')) {
   //       li(a({ href: "#welcome" }, 'BADGER.COM')),
   //       badger_menu_items
   //     ]
-  // 
+  //
   //   );
   // });
-  
+
   // define('badger_menu_items', function() {
   //   return ;
   // });
@@ -543,14 +525,14 @@ with (Hasher('Application')) {
   //      li({ 'class': "linked-account" }, a({ href: "#linked_accounts" }, 'LINKED ACCOUNTS')),
   //     li({ 'class': "send-invite hidden", id : 'invites_available'}, a({ href: "#invites" }, span('SEND INVITES'), span({ id: 'invite_available_count' })))
   //   );
-  // 
+  //
   //   return nav;
   // });
 
   // define('domain_menu_item', function(domain) {
   //   //var domain = Domain.find(domain);
   //   var app_list = ul();
-  // 
+  //
   //   load_domain(domain, function(domain_obj) {
   //     if (domain_obj.current_registrar == 'Unknown') {
   //       var timeout = setTimeout(function() {
@@ -572,11 +554,11 @@ with (Hasher('Application')) {
   //           );
   //         }
   //       }
-  // 
+  //
   //       update_sidebar_with_correct_actives(get_route());
   //     }
   //   });
-  // 
+  //
   //   return li({ id: 'domain-menu-item-' + domain.replace('.','-'), 'class': 'domain-menu-item' },
   //     a({ href: "#domains/" + domain }, div({ 'class': 'long-domain-name' }, domain.toUpperCase())),
   //     app_list
